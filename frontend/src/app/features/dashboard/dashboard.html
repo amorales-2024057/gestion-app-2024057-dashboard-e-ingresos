@@ -1,0 +1,143 @@
+<div class="dashboard-page">
+  <div class="dashboard-page__decor" aria-hidden="true"></div>
+
+  <div class="dashboard-page__inner">
+
+    <!-- barra de navegacion -->
+    <header class="navbar">
+      <div class="brand">
+        <img src="logo-icono.png" alt="Code Pulse" class="brand__logo" />
+        <span class="brand__name">Balance</span>
+      </div>
+
+      <nav class="navlinks">
+        <span class="navlink navlink--activo">Dashboard</span>
+        <span class="navlink navlink--pendiente" title="Disponible en una proxima entrega">Registros</span>
+        <span class="navlink navlink--pendiente" title="Disponible en una proxima entrega">Nuevo Registro</span>
+        <button type="button" class="navlink navlink--boton" (click)="cerrarSesion()">Cerrar sesion</button>
+      </nav>
+
+      @if (usuario(); as datosUsuario) {
+        <div class="userbox">
+          <span class="userbox__avatar">{{ datosUsuario.nombre.charAt(0) }}</span>
+          <div class="userbox__text">
+            <span class="userbox__hi">Hola</span>
+            <span class="userbox__name">{{ datosUsuario.nombre }}</span>
+          </div>
+        </div>
+      }
+    </header>
+
+    <!-- encabezado de la pagina -->
+    <section class="page-head">
+      <div class="page-head__titles">
+        <h1>Vista del Dashboard</h1>
+        <p>Monitorea tus gastos de manera mensual</p>
+      </div>
+
+      <div class="page-head__actions">
+        <button class="dropdown" type="button" disabled title="Disponible en una proxima entrega">
+          <span>Este Mes</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="btn-filter" type="button" disabled title="Disponible en una proxima entrega">
+          <span class="btn-filter__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          Filtro
+        </button>
+      </div>
+    </section>
+
+    <!-- tarjetas de estadisticas -->
+    <section class="stats">
+      @for (tarjeta of tarjetas; track tarjeta.etiqueta) {
+        <article
+          class="stat-card"
+          [class.stat-card--fill]="tarjeta.destacada"
+        >
+          <div class="stat-card__top">
+            <span class="stat-card__label">{{ tarjeta.etiqueta }}</span>
+
+            <span
+              class="stat-card__icon"
+              [class.stat-card__icon--clara]="tarjeta.destacada"
+              [class.stat-card__icon--acento]="tarjeta.acento"
+              aria-hidden="true"
+            >
+              @switch (tarjeta.icono) {
+                @case ('billete') {
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3c-2.5 2-4 3.6-4 6a4 4 0 008 0c0-2.4-1.5-4-4-6z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6 13h12l-1.4 7.2a1 1 0 01-1 .8H8.4a1 1 0 01-1-.8L6 13z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                }
+                @case ('persona') {
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                  </svg>
+                }
+                @case ('flecha') {
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 7h11v0M18 7l-4-4M18 7l-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17 17H6v0M6 17l4 4M6 17l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                }
+                @case ('grafico') {
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M12 3.5V12h8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                }
+              }
+            </span>
+          </div>
+          <strong
+            class="stat-card__value"
+            [class.stat-card__value--accent]="tarjeta.acento"
+          >{{ tarjeta.valor }}</strong>
+          <span class="stat-card__delta">{{ tarjeta.delta }}</span>
+        </article>
+      }
+    </section>
+
+    <!-- graficas -->
+    <section class="charts">
+
+      <article class="chart-card chart-card--light">
+        <h2>Balance por año:</h2>
+        <div class="chart-frame">
+          @if (svgLinea) {
+            <div [innerHTML]="svgLinea"></div>
+          } @else {
+            <div class="chart-frame__vacio">
+              <span>Aún no hay registros para mostrar</span>
+            </div>
+          }
+        </div>
+      </article>
+
+      <article class="chart-card chart-card--dark">
+        <div class="chart-card__head">
+          <h2>balance mensual del<br />usuario por<br /><span class="chart-card__big">Año:</span></h2>
+          <button class="dropdown dropdown--dark" type="button" disabled title="Disponible en una proxima entrega">
+            <span>{{ anioActual }}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="chart-frame">
+          @if (svgBarras) {
+            <div [innerHTML]="svgBarras"></div>
+          } @else {
+            <div class="chart-frame__vacio chart-frame__vacio--dark">
+              <span>Aún no hay registros para mostrar</span>
+            </div>
+          }
+        </div>
+      </article>
+
+    </section>
+
+  </div>
+</div>
