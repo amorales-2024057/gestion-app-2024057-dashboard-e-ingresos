@@ -1,0 +1,25 @@
+@if (sesionExpiradaService.estaVisible()) {
+  <div class="overlay-sesion" role="presentation" (click)="irAlLogin()">
+    <div
+      class="modal-sesion"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="modal-sesion-titulo"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-sesion__icono">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6" />
+          <path d="M12 7V12L15.2 14.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <h2 id="modal-sesion-titulo" class="modal-sesion__titulo">Sesión finalizada</h2>
+      <p class="modal-sesion__texto">{{ sesionExpiradaService.mensajeActual() }}</p>
+
+      <button type="button" class="modal-sesion__boton" (click)="irAlLogin()">
+        Volver a iniciar sesión
+      </button>
+    </div>
+  </div>
+}

@@ -1,0 +1,128 @@
+.overlay-sesion {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(1, 15, 31, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: overlay-aparecer 0.25s ease forwards;
+}
+
+.modal-sesion {
+  width: 100%;
+  max-width: 24rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 2.25rem 2rem 2rem;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  box-shadow: 0 30px 70px -25px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(0, 102, 255, 0.08);
+  animation: modal-aparecer 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modal-sesion__icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  background: rgba(0, 102, 255, 0.12);
+  color: var(--color-accent);
+  border: 1px solid rgba(0, 102, 255, 0.35);
+  animation: icono-pulso 2.2s ease-in-out infinite;
+}
+
+.modal-sesion__icono svg {
+  width: 1.7rem;
+  height: 1.7rem;
+}
+
+.modal-sesion__titulo {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.3rem;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.modal-sesion__texto {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.modal-sesion__boton {
+  margin-top: 0.4rem;
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-accent);
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.modal-sesion__boton:hover {
+  filter: brightness(1.08);
+}
+
+.modal-sesion__boton:active {
+  transform: scale(0.99);
+}
+
+.modal-sesion__boton:focus-visible {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
+}
+
+@keyframes overlay-aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes icono-pulso {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(0, 102, 255, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay-sesion,
+  .modal-sesion,
+  .modal-sesion__icono {
+    animation: none;
+  }
+}
