@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-const MENSAJE_POR_DEFECTO = 'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.';
+const MENSAJE_POR_DEFECTO = 'Su sesión ha expirado por inactividad. Por favor, inicie sesión nuevamente.';
 
 @Injectable({ providedIn: 'root' })
 export class SesionExpiradaService {

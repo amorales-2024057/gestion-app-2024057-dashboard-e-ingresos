@@ -3,42 +3,64 @@
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1.05fr 1fr;
-  background: #000000;
+  background: #020512;
   overflow: hidden;
 }
 
 .pantalla-login::before {
   content: '';
   position: fixed;
-  inset: -25%;
+  inset: -60%;
   z-index: 0;
-  background:
-    radial-gradient(circle at 18% 22%, rgba(11, 12, 116, 0.95), transparent 45%),
-    radial-gradient(circle at 82% 18%, rgba(5, 21, 61, 0.9), transparent 40%),
-    radial-gradient(circle at 75% 82%, rgba(11, 12, 116, 0.75), transparent 50%),
-    radial-gradient(circle at 20% 80%, rgba(5, 21, 61, 0.95), transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.98), transparent 70%);
-  filter: blur(50px);
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(11, 12, 116, 0.45) 0px,
+    transparent 40px,
+    rgba(5, 21, 61, 0.5) 80px,
+    transparent 120px,
+    rgba(8, 21, 66, 0.35) 160px,
+    transparent 200px
+  );
+  filter: blur(20px);
   pointer-events: none;
-  animation: luces-fondo 18s ease-in-out infinite alternate;
+  animation: rotar-anillos-a 18s linear infinite;
+  will-change: transform;
 }
 
-@keyframes luces-fondo {
-  0% {
-    transform: scale(1) translate(0, 0) rotate(0deg);
-    filter: blur(50px) brightness(1);
+.pantalla-login::after {
+  content: '';
+  position: fixed;
+  inset: -60%;
+  z-index: 0;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    transparent 20px,
+    rgba(3, 10, 40, 0.6) 60px,
+    transparent 100px,
+    rgba(11, 12, 116, 0.3) 140px,
+    transparent 180px
+  );
+  filter: blur(25px);
+  pointer-events: none;
+  animation: rotar-anillos-b 24s linear infinite reverse;
+  will-change: transform;
+}
+
+@keyframes rotar-anillos-a {
+  from {
+    transform: rotate(0deg);
   }
-  33% {
-    transform: scale(1.12) translate(3%, 4%) rotate(3deg);
-    filter: blur(60px) brightness(1.2);
+  to {
+    transform: rotate(360deg);
   }
-  66% {
-    transform: scale(0.92) translate(-3%, 2%) rotate(-3deg);
-    filter: blur(40px) brightness(0.9);
+}
+
+@keyframes rotar-anillos-b {
+  from {
+    transform: rotate(0deg);
   }
-  100% {
-    transform: scale(1.08) translate(2%, -4%) rotate(1.5deg);
-    filter: blur(55px) brightness(1.15);
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -53,49 +75,31 @@
   border-right: 1px solid var(--color-border);
 }
 
-.panel-marca::before,
-.panel-marca::after {
+.panel-marca::before {
   content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  pointer-events: none;
+  inset: -80%;
   z-index: 0;
+  border-radius: 0;
+  background: repeating-radial-gradient(
+    circle at 45% 55%,
+    rgba(11, 12, 116, 0.35) 0px,
+    transparent 50px,
+    rgba(5, 21, 61, 0.4) 100px,
+    transparent 150px
+  );
+  filter: blur(30px);
+  pointer-events: none;
+  animation: rotar-anillos-c 12s linear infinite;
+  will-change: transform;
 }
 
-.panel-marca::before {
-  width: 26rem;
-  height: 26rem;
-  top: -8rem;
-  left: -6rem;
-  background: radial-gradient(circle, rgba(11, 12, 116, 0.5), transparent 70%);
-  animation: aurora-flotar-a 14s ease-in-out infinite;
-}
-
-.panel-marca::after {
-  width: 22rem;
-  height: 22rem;
-  bottom: -9rem;
-  right: -7rem;
-  background: radial-gradient(circle, rgba(5, 21, 61, 0.6), transparent 70%);
-  animation: aurora-flotar-b 18s ease-in-out infinite;
-}
-
-@keyframes aurora-flotar-a {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
+@keyframes rotar-anillos-c {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: translate(2.5rem, 3rem) scale(1.12);
-  }
-}
-
-@keyframes aurora-flotar-b {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(-2rem, -2.5rem) scale(1.08);
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -197,46 +201,39 @@
   stroke-linecap: round;
   stroke-dasharray: 900;
   stroke-dashoffset: 900;
-  animation: dibujar-linea 2.4s ease forwards 0.3s,
-    flotar-linea 6s ease-in-out infinite 2.7s;
-  filter: drop-shadow(0 0 6px rgba(11, 12, 116, 0.6));
+  animation: dibujar-sin-fin 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(11, 12, 116, 0.9));
+  will-change: stroke-dashoffset;
 }
 
 .grafico-flujo__punto {
   fill: var(--color-accent);
-  filter: drop-shadow(0 0 8px rgba(11, 12, 116, 0.9));
-  opacity: 0;
-  animation: aparecer-punto 0.6s ease forwards 2.4s,
-    pulso-punto 2.2s ease-in-out infinite 3s;
+  filter: drop-shadow(0 0 12px rgba(11, 12, 116, 1));
+  opacity: 1;
+  animation: pulso-constante 0.8s ease-in-out infinite alternate;
+  will-change: transform, r;
 }
 
-@keyframes dibujar-linea {
-  to {
+@keyframes dibujar-sin-fin {
+  0% {
+    stroke-dashoffset: 900;
+  }
+  50% {
     stroke-dashoffset: 0;
   }
-}
-
-@keyframes flotar-linea {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
+  100% {
+    stroke-dashoffset: -900;
   }
 }
 
-@keyframes aparecer-punto {
-  to {
+@keyframes pulso-constante {
+  0% {
+    r: 3;
+    opacity: 0.4;
+  }
+  100% {
+    r: 7;
     opacity: 1;
-  }
-}
-
-@keyframes pulso-punto {
-  0%, 100% {
-    r: 4;
-  }
-  50% {
-    r: 5.5;
   }
 }
 
@@ -505,11 +502,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pantalla-login::before,
+  .pantalla-login::after,
+  .panel-marca::before,
   .grafico-flujo__linea,
   .grafico-flujo__punto,
   .boton-enviar__spinner,
-  .panel-marca::before,
-  .panel-marca::after,
   .marca,
   .panel-marca__titulo,
   .panel-marca__subtitulo,
