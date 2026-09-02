@@ -7,13 +7,13 @@
     <header class="navbar">
       <div class="brand">
         <img src="logo-icono.png" alt="Code Pulse" class="brand__logo" />
-        <span class="brand__name">Balance</span>
+        <span class="brand__name">CODE-PULSE</span>
       </div>
 
       <nav class="navlinks">
         <span class="navlink navlink--activo">Dashboard</span>
         <span class="navlink navlink--pendiente" title="Disponible en una proxima entrega">Registros</span>
-        <span class="navlink navlink--pendiente" title="Disponible en una proxima entrega">Nuevo Registro</span>
+        <a routerLink="/nuevo-registro" class="navlink navlink--enlace">Nuevo Registro</a>
         <button type="button" class="navlink navlink--boton" (click)="cerrarSesion()">Cerrar sesion</button>
       </nav>
 
@@ -49,56 +49,69 @@
       </div>
     </section>
 
+    @if (errorCarga(); as mensaje) {
+      <div class="dashboard-alerta">
+        <span>{{ mensaje }}</span>
+        <button type="button" (click)="reintentar()">Reintentar</button>
+      </div>
+    }
+
     <!-- tarjetas de estadisticas -->
     <section class="stats">
-      @for (tarjeta of tarjetas; track tarjeta.etiqueta) {
-        <article
-          class="stat-card"
-          [class.stat-card--fill]="tarjeta.destacada"
-        >
-          <div class="stat-card__top">
-            <span class="stat-card__label">{{ tarjeta.etiqueta }}</span>
+      @if (cargando()) {
+        @for (relleno of [1, 2, 3, 4]; track relleno) {
+          <article class="stat-card stat-card--esqueleto" aria-hidden="true"></article>
+        }
+      } @else {
+        @for (tarjeta of tarjetas(); track tarjeta.etiqueta) {
+          <article
+            class="stat-card"
+            [class.stat-card--fill]="tarjeta.destacada"
+          >
+            <div class="stat-card__top">
+              <span class="stat-card__label">{{ tarjeta.etiqueta }}</span>
 
-            <span
-              class="stat-card__icon"
-              [class.stat-card__icon--clara]="tarjeta.destacada"
-              [class.stat-card__icon--acento]="tarjeta.acento"
-              aria-hidden="true"
-            >
-              @switch (tarjeta.icono) {
-                @case ('billete') {
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 3c-2.5 2-4 3.6-4 6a4 4 0 008 0c0-2.4-1.5-4-4-6z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M6 13h12l-1.4 7.2a1 1 0 01-1 .8H8.4a1 1 0 01-1-.8L6 13z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+              <span
+                class="stat-card__icon"
+                [class.stat-card__icon--clara]="tarjeta.destacada"
+                [class.stat-card__icon--acento]="tarjeta.acento"
+                aria-hidden="true"
+              >
+                @switch (tarjeta.icono) {
+                  @case ('billete') {
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3c-2.5 2-4 3.6-4 6a4 4 0 008 0c0-2.4-1.5-4-4-6z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M6 13h12l-1.4 7.2a1 1 0 01-1 .8H8.4a1 1 0 01-1-.8L6 13z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  }
+                  @case ('persona') {
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
+                      <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    </svg>
+                  }
+                  @case ('flecha') {
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M7 7h11v0M18 7l-4-4M18 7l-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M17 17H6v0M6 17l4 4M6 17l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  }
+                  @case ('grafico') {
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
+                      <path d="M12 3.5V12h8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  }
                 }
-                @case ('persona') {
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/>
-                    <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                  </svg>
-                }
-                @case ('flecha') {
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 7h11v0M18 7l-4-4M18 7l-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M17 17H6v0M6 17l4 4M6 17l4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                }
-                @case ('grafico') {
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
-                    <path d="M12 3.5V12h8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                }
-              }
-            </span>
-          </div>
-          <strong
-            class="stat-card__value"
-            [class.stat-card__value--accent]="tarjeta.acento"
-          >{{ tarjeta.valor }}</strong>
-          <span class="stat-card__delta">{{ tarjeta.delta }}</span>
-        </article>
+              </span>
+            </div>
+            <strong
+              class="stat-card__value"
+              [class.stat-card__value--accent]="tarjeta.acento"
+            >{{ tarjeta.valor }}</strong>
+            <span class="stat-card__delta">{{ tarjeta.delta }}</span>
+          </article>
+        }
       }
     </section>
 
@@ -108,8 +121,12 @@
       <article class="chart-card chart-card--light">
         <h2>Balance por año:</h2>
         <div class="chart-frame">
-          @if (svgLinea) {
-            <div [innerHTML]="svgLinea"></div>
+          @if (cargando()) {
+            <div class="chart-frame__vacio">
+              <span>Cargando información...</span>
+            </div>
+          } @else if (svgLinea(); as grafica) {
+            <div [innerHTML]="grafica"></div>
           } @else {
             <div class="chart-frame__vacio">
               <span>Aún no hay registros para mostrar</span>
@@ -127,8 +144,12 @@
           </button>
         </div>
         <div class="chart-frame">
-          @if (svgBarras) {
-            <div [innerHTML]="svgBarras"></div>
+          @if (cargando()) {
+            <div class="chart-frame__vacio chart-frame__vacio--dark">
+              <span>Cargando información...</span>
+            </div>
+          } @else if (svgBarras(); as grafica) {
+            <div [innerHTML]="grafica"></div>
           } @else {
             <div class="chart-frame__vacio chart-frame__vacio--dark">
               <span>Aún no hay registros para mostrar</span>

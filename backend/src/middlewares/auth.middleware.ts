@@ -29,7 +29,7 @@ export function verificarToken(
         if (error instanceof jwt.TokenExpiredError) {
             throw new ApiError(
                 401,
-                'Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.',
+                'Su sesión ha expirado por inactividad. Por favor, inicie sesión nuevamente.',
                 'TOKEN_EXPIRADO'
             );
         }
