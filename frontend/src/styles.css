@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
   --color-bg-deep: #010f1f;
@@ -10,8 +10,8 @@
   --color-text-primary: #ffffff;
   --color-text-secondary: #a0aab8;
 
-  --font-display: 'Space Grotesk', 'Inter', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Poppins', 'Inter', sans-serif;
+  --font-body: 'Poppins', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   color-scheme: dark;

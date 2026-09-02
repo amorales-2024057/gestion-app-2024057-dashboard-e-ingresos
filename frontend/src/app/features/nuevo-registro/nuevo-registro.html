@@ -1,0 +1,200 @@
+<div class="registro-page">
+  <div class="registro-page__decor" aria-hidden="true"></div>
+
+  <div class="registro-page__inner">
+
+    <header class="navbar">
+      <div class="brand">
+        <img src="logo-icono.png" alt="Code Pulse" class="brand__logo" />
+        <span class="brand__name">CODE-PULSE</span>
+      </div>
+
+      <nav class="navlinks">
+        <a routerLink="/dashboard" class="navlink navlink--enlace">Dashboard</a>
+        <span class="navlink navlink--pendiente" title="Disponible en una proxima entrega">Registros</span>
+        <span class="navlink navlink--activo">Nuevo Registro</span>
+        <button type="button" class="navlink navlink--boton" (click)="cerrarSesion()">Cerrar sesion</button>
+      </nav>
+
+      @if (usuario(); as datosUsuario) {
+        <div class="userbox">
+          <span class="userbox__avatar">{{ datosUsuario.nombre.charAt(0) }}</span>
+          <div class="userbox__text">
+            <span class="userbox__hi">Hola</span>
+            <span class="userbox__name">{{ datosUsuario.nombre }}</span>
+          </div>
+        </div>
+      }
+    </header>
+
+    <section class="paneles">
+
+      <article class="panel panel--formulario">
+        <header class="panel__encabezado">
+          <h1>Agregar Transacción</h1>
+          <p>Ingrese los detalles del nuevo ingreso o egreso</p>
+        </header>
+
+        <div class="tipo-movimiento">
+          <span class="tipo-movimiento__etiqueta">TIPO DE MOVIMIENTO:</span>
+
+          <div class="toggle-tipo" role="group" aria-label="Tipo de movimiento">
+            <button type="button" class="toggle-tipo__opcion toggle-tipo__opcion--activa" aria-pressed="true">
+              INGRESO
+            </button>
+            <button
+              type="button"
+              class="toggle-tipo__opcion"
+              aria-pressed="false"
+              (click)="mostrarAvisoEgreso()"
+            >
+              EGRESO
+            </button>
+          </div>
+
+          @if (avisoEgresoVisible()) {
+            <p class="tipo-movimiento__nota">
+              Por el momento solo puede registrar ingresos. El registro de egresos estará disponible en una próxima entrega.
+            </p>
+          }
+        </div>
+
+        <form [formGroup]="formulario" (ngSubmit)="agregarALaLista()" class="formulario" novalidate>
+          <div class="campo">
+            <label for="descripcion">Descripción:</label>
+            <input
+              id="descripcion"
+              type="text"
+              formControlName="descripcion"
+              placeholder="El salario fijo"
+              autocomplete="off"
+            />
+            @if (formulario.get('descripcion')?.invalid && formulario.get('descripcion')?.touched) {
+              <span class="campo__error">Ingrese una descripción (máximo 150 caracteres).</span>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="monto">Monto (Q):</label>
+            <input
+              id="monto"
+              type="number"
+              step="0.01"
+              min="0.01"
+              formControlName="monto"
+              placeholder="Q"
+            />
+            @if (formulario.get('monto')?.invalid && formulario.get('monto')?.touched) {
+              <span class="campo__error">Ingrese un monto mayor a Q0.00.</span>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="fecha">Fecha:</label>
+            <input id="fecha" type="date" formControlName="fecha" />
+            @if (formulario.get('fecha')?.invalid && formulario.get('fecha')?.touched) {
+              <span class="campo__error">Seleccione una fecha.</span>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoría:</label>
+            <select id="categoria" formControlName="categoria">
+              <option value="" disabled>Seleccionar Categoría</option>
+              @for (categoria of categorias; track categoria.valor) {
+                <option [value]="categoria.valor">{{ categoria.etiqueta }}</option>
+              }
+            </select>
+            @if (formulario.get('categoria')?.invalid && formulario.get('categoria')?.touched) {
+              <span class="campo__error">Seleccione una categoría.</span>
+            }
+          </div>
+
+          <button type="submit" class="boton-agregar">
+            <span class="boton-agregar__icono" aria-hidden="true">+</span>
+            AGREGAR A LA LISTA
+          </button>
+        </form>
+      </article>
+
+      <article class="panel panel--vista-previa">
+        <header class="panel__encabezado">
+          <h2>Vista Previa del Registro</h2>
+        </header>
+
+        <div class="lista-previa">
+          @if (vistaPrevia().length === 0) {
+            <div class="lista-previa__vacio">
+              <span>Aún no ha agregado ingresos a la lista.</span>
+              <span class="lista-previa__vacio-sub">Utilice el formulario de la izquierda para comenzar.</span>
+            </div>
+          } @else {
+            @for (fila of vistaPrevia(); track fila.idLocal) {
+              <div class="fila-previa">
+                <span class="fila-previa__icono" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 19V5M12 5l-6 6M12 5l6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+
+                <div class="fila-previa__info">
+                  <strong>{{ fila.descripcion }}</strong>
+                  <span>INGRESO * {{ etiquetaCategoria(fila.categoria) }}</span>
+                </div>
+
+                <span class="fila-previa__monto">+ {{ formatearMonto(fila.monto) }}</span>
+
+                <button
+                  type="button"
+                  class="fila-previa__quitar"
+                  (click)="quitarDeLaLista(fila.idLocal)"
+                  aria-label="Quitar de la lista"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          }
+        </div>
+
+        <footer class="panel__pie">
+          <div class="balance-a-registrar">
+            <span>Balance a registrar:</span>
+            <strong>{{ balanceARegistrarTexto() }}</strong>
+          </div>
+
+          @if (mensajeError(); as error) {
+            <div class="alerta alerta--error">{{ error }}</div>
+          }
+
+          @if (mensajeExito(); as exito) {
+            <div class="alerta alerta--exito">
+              {{ exito }}
+              <button type="button" (click)="irAlDashboard()">Ver dashboard</button>
+            </div>
+          }
+
+          <button
+            type="button"
+            class="boton-confirmar"
+            [disabled]="vistaPrevia().length === 0 || guardando()"
+            (click)="confirmarYGuardar()"
+          >
+            <span class="boton-confirmar__icono" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+              </svg>
+            </span>
+            @if (guardando()) {
+              GUARDANDO...
+            } @else {
+              CONFIRMAR Y GUARDAR REGISTRO
+            }
+          </button>
+        </footer>
+      </article>
+
+    </section>
+
+  </div>
+</div>
