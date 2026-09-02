@@ -363,7 +363,7 @@
 }
 
 .stat-card__icon--acento {
-  background: #1d5aab;
+  background: linear-gradient(to bottom, #0b0c74 0%, #1d5aab 100%);
   color: #ffffff;
 }
 
@@ -377,7 +377,7 @@
 }
 
 .stat-card__value--accent {
-  color: #0084ff;
+  color: #126ec5;
 }
 
 .stat-card__delta {
