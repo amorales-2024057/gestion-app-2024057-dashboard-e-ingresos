@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_BASE_URL } from '../config/api.config';
-import { LoginRequest, LoginResponse, UsuarioPublico } from '../models/usuario.model';
+import { LoginRequest, LoginResponse, RegistroRequest, UsuarioPublico } from '../models/usuario.model';
 import { SesionExpiradaService } from './sesion-expirada.service';
 
 const CLAVE_TOKEN = 'finanzas_token';
@@ -31,14 +31,24 @@ export class AuthService {
     login(credenciales: LoginRequest): Observable<LoginResponse> {
         return this.http
             .post<LoginResponse>(`${API_BASE_URL}/auth/login`, credenciales)
-            .pipe(
-                tap((respuesta) => {
-                    localStorage.setItem(CLAVE_TOKEN, respuesta.token);
-                    localStorage.setItem(CLAVE_USUARIO, JSON.stringify(respuesta.usuario));
-                    this.usuarioActual.set(respuesta.usuario);
-                    this.programarExpiracion(respuesta.token);
-                })
-            );
+            .pipe(tap((respuesta) => this.guardarSesion(respuesta)));
+    }
+
+    // Crea la cuenta desde el boton "Crear cuenta" del login y, si todo
+    // sale bien, deja la sesion iniciada de una vez (el backend regresa
+    // el mismo formato que login), para no pedirle a la persona que
+    // escriba sus credenciales dos veces seguidas.
+    registrar(datos: RegistroRequest): Observable<LoginResponse> {
+        return this.http
+            .post<LoginResponse>(`${API_BASE_URL}/auth/registro`, datos)
+            .pipe(tap((respuesta) => this.guardarSesion(respuesta)));
+    }
+
+    private guardarSesion(respuesta: LoginResponse): void {
+        localStorage.setItem(CLAVE_TOKEN, respuesta.token);
+        localStorage.setItem(CLAVE_USUARIO, JSON.stringify(respuesta.usuario));
+        this.usuarioActual.set(respuesta.usuario);
+        this.programarExpiracion(respuesta.token);
     }
 
     logout(): void {

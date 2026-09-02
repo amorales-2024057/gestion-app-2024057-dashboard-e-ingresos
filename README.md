@@ -21,7 +21,7 @@ guardan en texto plano en ningún lado — ni siquiera un administrador
 puede verlas, solo comprobar que coinciden. Hay dos tipos de cuenta:
 administrador y usuario normal.
 
-### 2. El Dashboard (completo visualmente, esperando datos reales)
+### 2. El Dashboard (completo y conectado a datos reales)
 Es la pantalla principal después de iniciar sesión. Muestra:
 
 - **4 tarjetas de resumen**, cada una con su ícono: Total de Ingresos,
@@ -29,40 +29,56 @@ Es la pantalla principal después de iniciar sesión. Muestra:
 - **2 gráficas**: una de línea con el balance a través de los años, y una
   de barras con el balance mes a mes del año actual.
 
-Todo esto ya está armado y se ve tal cual el diseño aprobado. Lo único es
-que **por ahora todos los números están en cero (Q0)** — y eso es a
-propósito, no es un error. Todavía no existe la pantalla donde la persona
-puede escribir "gasté Q350 en internet" o "recibí Q4,500 de un proyecto",
-así que no hay ningún ingreso o egreso guardado todavía de dónde sacar
-esos totales. En cuanto exista esa pantalla (ver más abajo, "Lo que
-falta"), el Dashboard va a empezar a mostrar los números reales y las
-gráficas se van a ir llenando solas, sin tener que tocar de nuevo esta
-parte.
+Estas tarjetas y gráficas ya **no muestran datos fijos en Q0**: se calculan
+en el backend (`GET /api/movimientos/resumen`) a partir de lo que el
+usuario haya guardado en "Nuevo Registro", y el dashboard vuelve a pedir
+ese resumen cada vez que se entra a la pantalla — por ejemplo, justo
+después de guardar un ingreso nuevo y volver del formulario.
 
-Es importante aclarar: **no se usó ningún número inventado ni de prueba**
-para "rellenar" el Dashboard y que se viera bonito. Se prefirió dejarlo
-en cero, honestamente, hasta que haya datos reales que mostrar.
+### 3. Crear cuenta (registro público, funcional)
+En el login ahora hay un enlace **"¿No tiene una cuenta? Regístrese"** que
+lleva a `/registro`. Esa pantalla pide nombre, apellido, correo, nombre de
+usuario, género, teléfono (opcional) y contraseña (con confirmación), y
+al guardar llama a `POST /api/auth/registro`. Ese endpoint valida los
+datos, revisa que el usuario/correo no estén repetidos, guarda la cuenta
+con rol `USER` y **deja la sesión iniciada de una vez** (regresa el mismo
+token que entrega el login), así que la persona entra directo al
+Dashboard sin tener que volver a escribir sus credenciales.
 
-### 3. La base de datos ya tiene espacio reservado para los movimientos
-Aunque la pantalla para agregar ingresos/egresos todavía no existe, ya se
-creó el lugar donde esos datos van a vivir dentro de la base de datos
-(una tabla llamada `movimientos`, con campos como tipo de movimiento,
-descripción, monto, categoría y fecha — los mismos campos del diseño que
-se aprobó para esa pantalla). Esto se hizo ahora para que, cuando llegue
-esa entrega, solo haya que construir la pantalla y conectarla — la base
-ya está lista y esperando.
+### 4. Nuevo Registro — alta de ingresos (funcional)
+Pantalla para agregar ingresos, siguiendo el maquetado aprobado: un
+formulario ("Agregar Transacción") con descripción, monto, fecha y
+categoría, y a la derecha una "Vista Previa del Registro" donde se van
+acumulando las filas antes de guardarlas. Al presionar
+**"Confirmar y guardar registro"** todas las filas de la vista previa se
+guardan de una sola vez en la base de datos (tabla `movimientos`) y el
+Dashboard queda actualizado automáticamente.
+
+Por instrucción explícita del cliente, **por el momento la aplicación
+solo permite registrar ingresos**: el toggle de "Egreso" del maquetado
+original no se muestra en esta entrega (ni en el formulario ni en
+ninguna parte de la interfaz), aunque la base de datos y el backend ya
+están preparados para soportarlo (`tipo IN ('INGRESO', 'EGRESO')`) el día
+que se habilite.
+
+### 5. Datos de usuario ampliados
+La tabla `usuarios` ahora guarda, además de usuario y contraseña:
+nombre, apellido, correo electrónico, género, rol, teléfono, foto de
+perfil (`avatar_url`) y si la cuenta está activa. El backend expone
+`PUT /api/usuarios/perfil` para actualizar esos datos (incluyendo un
+cambio de contraseña opcional) desde una futura pantalla de "Mi perfil".
 
 ## Lo que falta por construir
 
-- La pantalla para agregar un nuevo ingreso o egreso ("Nuevo Registro") y
-  la pantalla para ver el listado de todo lo registrado ("Registros").
-- Conectar esas pantallas con la base de datos, para que el Dashboard deje
-  de mostrar Q0 y empiece a mostrar los totales reales.
+- La pantalla para ver el listado de todo lo registrado ("Registros") y
+  sus filtros.
+- Una pantalla de "Mi perfil" en el frontend que consuma
+  `PUT /api/usuarios/perfil` (el backend de esa parte ya está listo).
+- Habilitar el registro de egresos (la base de datos y el backend ya lo
+  soportan; falta el toggle en la interfaz cuando el cliente lo autorice).
 - Reportes adicionales y filtros (por mes, por categoría, etc.) — los
   botones de "Este Mes" y "Filtro" ya están puestos en el Dashboard, pero
   todavía no hacen nada hasta que exista ese filtrado.
-- Definición y desarrollo del módulo de gestión de usuarios (roles y
-  permisos), si el cliente lo requiere.
 
 ---
 
@@ -90,12 +106,12 @@ finanzas-app/
 │   │   └── init.sql            # Creación de las tablas usuarios y movimientos
 │   ├── src/
 │   │   ├── config/              # Conexión a PostgreSQL y variables de entorno
-│   │   ├── controllers/         # Controladores HTTP
+│   │   ├── controllers/         # Controladores HTTP (auth, usuarios, movimientos)
 │   │   ├── middlewares/         # Autenticación (JWT) y manejo de errores
 │   │   ├── models/               # Tipos e interfaces (usuario, movimiento, auth)
 │   │   ├── repositories/        # Acceso a datos (queries SQL)
 │   │   ├── routes/               # Definición de endpoints
-│   │   ├── services/             # Lógica de negocio
+│   │   ├── services/             # Lógica de negocio (auth, usuarios, movimientos)
 │   │   ├── seed.ts               # Carga de usuarios admin/user (idempotente)
 │   │   ├── app.ts                # Configuración de Express
 │   │   └── server.ts             # Punto de entrada
@@ -107,20 +123,21 @@ finanzas-app/
     │   │   ├── config/           # URL base de la API
     │   │   ├── guards/           # authGuard (protección de rutas)
     │   │   ├── interceptors/     # authInterceptor (agrega el token JWT)
-    │   │   ├── models/           # Tipos compartidos (usuario, resumen financiero)
-    │   │   └── services/         # AuthService, DashboardService
+    │   │   ├── models/           # Tipos compartidos (usuario, movimiento, resumen)
+    │   │   └── services/         # AuthService, DashboardService, MovimientoService
     │   ├── shared/
     │   │   └── graficas/         # Dibuja las gráficas SVG del Dashboard
     │   └── features/
     │       ├── login/            # Pantalla de inicio de sesión (funcional)
-    │       └── dashboard/        # Resumen financiero visual (funcional, datos en Q0)
+    │       ├── dashboard/        # Resumen financiero visual (funcional, datos reales)
+    │       └── nuevo-registro/   # Alta de ingresos + vista previa (funcional)
     └── package.json
 ```
 
-> La tabla `movimientos` ya existe en la base de datos (ver `init.sql`),
-> pero todavía no tiene su `repository` / `service` / `controller` /
-> `routes` en el backend — eso se arma junto con las pantallas de
-> "Nuevo Registro" y "Registros".
+> La tabla `movimientos` soporta `INGRESO` y `EGRESO`, pero el backend y
+> la interfaz solo exponen `INGRESO` en esta entrega (ver sección
+> "Nuevo Registro" arriba). Habilitar `EGRESO` no requiere tocar la base
+> de datos, solo el formulario y las validaciones del backend.
 
 ### Lo que NO está en este repositorio (y por qué)
 
@@ -399,19 +416,39 @@ momento cambias el puerto del backend, recuerda actualizar
 
 ### Cómo funciona el Dashboard por dentro
 
-1. `DashboardService` (frontend) le entrega al componente del Dashboard un
-   "resumen financiero": las 4 tarjetas con su ícono y las dos gráficas.
-2. Ahora mismo ese servicio no llama a ningún endpoint — regresa un
-   resumen fijo en Q0 (`RESUMEN_VACIO`), porque todavía no hay ningún
-   movimiento guardado en la base de datos.
-3. Las gráficas se dibujan con funciones propias en TypeScript
-   (`shared/graficas/graficas.util.ts`), sin ninguna librería externa de
-   gráficas — arman el SVG a mano a partir de una lista de puntos.
-4. **Cuando exista el backend de `movimientos`:** solo hay que cambiar
-   `DashboardService` para que llame ese endpoint real (por ejemplo
-   `GET /api/dashboard/resumen`) en vez de regresar `RESUMEN_VACIO`. Ni el
-   componente del Dashboard ni las gráficas necesitan tocarse, porque ya
-   están armados para recibir cualquier resumen con esa misma forma.
+1. `DashboardService` (frontend) llama a `MovimientoService.obtenerResumen()`,
+   que hace `GET /api/movimientos/resumen` contra el backend.
+2. En el backend, `movimientoService.obtenerResumen()` agrega en PostgreSQL
+   los totales de ingresos/egresos (histórico, del año actual y del mes
+   actual vs. el anterior) y arma las 4 tarjetas junto con las series para
+   la gráfica de línea (últimos 7 años) y la de barras (12 meses del año
+   en curso). Si el usuario todavía no tiene movimientos, todo regresa en
+   cero pero con los ejes ya armados, igual que en el maquetado original.
+3. Las gráficas se dibujan en el frontend con funciones propias en
+   TypeScript (`shared/graficas/graficas.util.ts`), sin ninguna librería
+   externa de gráficas — arman el SVG a mano a partir de una lista de
+   puntos que manda el backend.
+4. `Dashboard` (el componente) vuelve a pedir este resumen cada vez que se
+   entra a la ruta `/dashboard`, así que después de guardar un ingreso en
+   "Nuevo Registro" y volver, las tarjetas y gráficas ya están al día.
+
+### Cómo funciona "Nuevo Registro" por dentro
+
+1. El formulario de la izquierda ("Agregar Transacción") valida
+   descripción, monto (> Q0.00), fecha y categoría con Angular Reactive
+   Forms. El tipo de movimiento va fijo en `INGRESO` — no hay ningún
+   control de egreso visible en esta entrega.
+2. Cada clic en **"+ Agregar a la lista"** agrega esa fila a un arreglo en
+   memoria (un `signal`) que alimenta la "Vista Previa del Registro" de la
+   derecha; todavía no se ha guardado nada en la base de datos.
+3. El clic en **"Confirmar y guardar registro"** manda todas las filas
+   juntas a `POST /api/movimientos/lote`, que las inserta en una sola
+   transacción de PostgreSQL. Si todo sale bien, se limpia la vista previa
+   y aparece un aviso con acceso directo al Dashboard ya actualizado.
+4. En el backend, `movimientoService.crearLote()` rechaza cualquier
+   movimiento que no sea `INGRESO` o que no traiga una categoría válida
+   del catálogo (`GET /api/movimientos/categorias`), sin importar lo que
+   mande el cliente.
 
 ### Paleta de colores
 

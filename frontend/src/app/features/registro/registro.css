@@ -1,13 +1,13 @@
-.pantalla-login {
+.pantalla-registro {
   position: relative;
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
+  grid-template-columns: 1fr 1.2fr;
   background: #020512;
   overflow: hidden;
 }
 
-.pantalla-login::before {
+.pantalla-registro::before {
   content: '';
   position: fixed;
   inset: -60%;
@@ -27,7 +27,7 @@
   will-change: transform;
 }
 
-.pantalla-login::after {
+.pantalla-registro::after {
   content: '';
   position: fixed;
   inset: -60%;
@@ -47,21 +47,13 @@
 }
 
 @keyframes rotar-anillos-a {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes rotar-anillos-b {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .panel-marca {
@@ -70,7 +62,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 4rem 4.5rem;
+  padding: 4rem 3.5rem;
   overflow: hidden;
   border-right: 1px solid var(--color-border);
 }
@@ -80,7 +72,6 @@
   position: absolute;
   inset: -80%;
   z-index: 0;
-  border-radius: 0;
   background: repeating-radial-gradient(
     circle at 45% 55%,
     rgba(11, 12, 116, 0.35) 0px,
@@ -95,18 +86,14 @@
 }
 
 @keyframes rotar-anillos-c {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .panel-marca__contenido {
   position: relative;
   z-index: 1;
-  max-width: 30rem;
+  max-width: 26rem;
 }
 
 .marca {
@@ -115,7 +102,7 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  margin-bottom: 3.5rem;
+  margin-bottom: 3rem;
   opacity: 0;
   animation: entrada-suave 0.6s ease forwards;
 }
@@ -127,12 +114,6 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 0.65rem;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.marca:hover .marca__icono {
-  transform: rotate(-8deg) scale(1.06);
-  box-shadow: 0 0 18px rgba(11, 12, 116, 0.6);
 }
 
 .marca__icono img {
@@ -143,6 +124,7 @@
 
 .marca__nombre {
   font-family: var(--font-display);
+  font-weight: 700;
   font-size: 1.15rem;
   letter-spacing: 0.02em;
   color: var(--color-text-primary);
@@ -153,8 +135,8 @@
   z-index: 1;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.1rem, 3.4vw, 2.9rem);
-  line-height: 1.15;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  line-height: 1.18;
   color: var(--color-text-primary);
   margin: 0 0 1.1rem;
   letter-spacing: -0.01em;
@@ -169,30 +151,24 @@
   font-size: 1rem;
   line-height: 1.6;
   color: var(--color-text-secondary);
-  max-width: 24rem;
+  max-width: 22rem;
   margin: 0;
   opacity: 0;
   animation: entrada-suave 0.6s ease forwards 0.2s;
 }
 
 @keyframes entrada-suave {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .grafico-flujo {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 30rem;
+  max-width: 26rem;
   height: auto;
-  margin-top: 3.5rem;
+  margin-top: 3rem;
 }
 
 .grafico-flujo__linea {
@@ -209,32 +185,19 @@
 .grafico-flujo__punto {
   fill: var(--color-accent);
   filter: drop-shadow(0 0 12px rgba(11, 12, 116, 1));
-  opacity: 1;
   animation: pulso-constante 0.8s ease-in-out infinite alternate;
   will-change: transform, r;
 }
 
 @keyframes dibujar-sin-fin {
-  0% {
-    stroke-dashoffset: 900;
-  }
-  50% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -900;
-  }
+  0% { stroke-dashoffset: 900; }
+  50% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -900; }
 }
 
 @keyframes pulso-constante {
-  0% {
-    r: 3;
-    opacity: 0.4;
-  }
-  100% {
-    r: 7;
-    opacity: 1;
-  }
+  0% { r: 3; opacity: 0.4; }
+  100% { r: 7; opacity: 1; }
 }
 
 .panel-marca__pie {
@@ -255,62 +218,56 @@
   padding: 2.5rem;
 }
 
-.tarjeta-login {
+.tarjeta-registro {
   width: 100%;
-  max-width: 23rem;
+  max-width: 32rem;
   background: rgba(5, 21, 61, 0.4);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(11, 12, 116, 0.35);
   border-radius: 1.25rem;
-  padding: 2.5rem 2.25rem;
+  padding: 2.25rem 2.25rem 2rem;
   box-shadow: 0 20px 50px -25px rgba(0, 0, 0, 0.9);
   opacity: 0;
   animation: entrada-tarjeta 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.15s;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.tarjeta-login:hover {
-  box-shadow: 0 24px 60px -22px rgba(0, 0, 0, 0.95), 0 0 20px rgba(11, 12, 116, 0.25);
-  border-color: rgba(11, 12, 116, 0.55);
 }
 
 @keyframes entrada-tarjeta {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.tarjeta-login__encabezado h2 {
+.tarjeta-registro__encabezado h2 {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-size: 1.4rem;
+  font-weight: 600;
   color: var(--color-text-primary);
   margin: 0 0 0.35rem;
 }
 
-.tarjeta-login__encabezado p {
+.tarjeta-registro__encabezado p {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--color-text-secondary);
-  margin: 0 0 2rem;
+  margin: 0 0 1.6rem;
 }
 
 .formulario {
   display: flex;
   flex-direction: column;
-  gap: 1.35rem;
+  gap: 1.1rem;
+}
+
+.formulario__fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .campo {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .campo label {
@@ -321,16 +278,31 @@
   letter-spacing: 0.01em;
 }
 
-.campo input {
+.campo__opcional {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.campo input,
+.campo select {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--color-text-primary);
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(11, 12, 116, 0.4);
   border-radius: 0.6rem;
-  padding: 0.75rem 0.9rem;
+  padding: 0.7rem 0.85rem;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.campo select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M6 9l6 6 6-6' stroke='%23a0aab8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  cursor: pointer;
 }
 
 .campo input::placeholder {
@@ -338,19 +310,15 @@
   opacity: 0.55;
 }
 
-.campo input:focus {
+.campo input:focus,
+.campo select:focus {
   border-color: #0b0c74;
   box-shadow: 0 0 0 3px rgba(11, 12, 116, 0.35);
 }
 
-.campo input:focus-visible {
-  outline: 2px solid #0b0c74;
-  outline-offset: 2px;
-}
-
 .campo__error {
   font-family: var(--font-body);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--color-accent);
 }
 
@@ -362,17 +330,17 @@
 
 .campo__password input {
   width: 100%;
-  padding-right: 2.75rem;
+  padding-right: 2.6rem;
 }
 
 .campo__boton-ojo {
   position: absolute;
-  right: 0.6rem;
+  right: 0.55rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 1.8rem;
+  height: 1.8rem;
   background: transparent;
   border: none;
   color: var(--color-text-secondary);
@@ -384,14 +352,9 @@
   color: var(--color-text-primary);
 }
 
-.campo__boton-ojo:focus-visible {
-  outline: 2px solid #0b0c74;
-  outline-offset: 2px;
-}
-
 .campo__boton-ojo svg {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 .alerta {
@@ -419,22 +382,9 @@
   border-radius: 999px;
   padding: 0.8rem 1rem;
   cursor: pointer;
-  margin-top: 0.4rem;
+  margin-top: 0.3rem;
   overflow: hidden;
   transition: filter 0.15s ease, transform 0.1s ease, box-shadow 0.2s ease;
-}
-
-.boton-enviar::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.28) 50%, transparent 80%);
-  transform: translateX(-120%);
-  transition: transform 0.5s ease;
-}
-
-.boton-enviar:hover:not(:disabled)::before {
-  transform: translateX(120%);
 }
 
 .boton-enviar:hover:not(:disabled) {
@@ -444,11 +394,6 @@
 
 .boton-enviar:active:not(:disabled) {
   transform: scale(0.99);
-}
-
-.boton-enviar:focus-visible {
-  outline: 2px solid var(--color-text-primary);
-  outline-offset: 2px;
 }
 
 .boton-enviar:disabled {
@@ -466,9 +411,7 @@
 }
 
 @keyframes girar {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .enlace-secundario {
@@ -489,38 +432,33 @@
   text-decoration: underline;
 }
 
-@media (max-width: 900px) {
-  .pantalla-login {
+@media (max-width: 960px) {
+  .pantalla-registro {
     grid-template-columns: 1fr;
   }
 
   .panel-marca {
-    padding: 2.75rem 2rem 2.25rem;
+    padding: 2.5rem 1.75rem 2rem;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
-  }
-
-  .panel-marca__subtitulo {
-    max-width: none;
-  }
-
-  .grafico-flujo {
-    margin-top: 2rem;
-    max-height: 6rem;
   }
 
   .panel-marca__pie {
     display: none;
   }
 
+  .formulario__fila {
+    grid-template-columns: 1fr;
+  }
+
   .panel-formulario {
-    padding: 2rem 1.5rem 3rem;
+    padding: 2rem 1.25rem 3rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pantalla-login::before,
-  .pantalla-login::after,
+  .pantalla-registro::before,
+  .pantalla-registro::after,
   .panel-marca::before,
   .grafico-flujo__linea,
   .grafico-flujo__punto,
@@ -528,7 +466,7 @@
   .marca,
   .panel-marca__titulo,
   .panel-marca__subtitulo,
-  .tarjeta-login {
+  .tarjeta-registro {
     animation: none;
     stroke-dashoffset: 0;
     opacity: 1;
