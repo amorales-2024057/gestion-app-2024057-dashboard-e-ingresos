@@ -12,6 +12,6 @@ export const env = {
         password: process.env.DB_PASSWORD || 'admin',
     },
     jwtSecret: process.env.JWT_SECRET || 'Koda2021@',
-    jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1m',
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || '4h',
     corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:4200',
 };
